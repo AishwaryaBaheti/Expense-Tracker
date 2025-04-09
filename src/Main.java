@@ -18,6 +18,6 @@ public class Main {
 
         int operation = sc.nextInt();
 
-
+        System.out.println(operation);
     }
 }
