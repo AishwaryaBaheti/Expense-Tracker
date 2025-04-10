@@ -1,6 +1,7 @@
-
 import java.util.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.UUID;
 
 class Expense {
@@ -9,11 +10,11 @@ class Expense {
     private double amount;
     private LocalDate date;
 
-    public Expense(String description, double amount) {
+    public Expense(String description, double amount, LocalDate date) {
         this.id = UUID.randomUUID().toString();
         this.description = description;
         this.amount = amount;
-        this.date = LocalDate.now();
+        this.date = date;
     }
 
     public String getId() { return id; }
@@ -23,6 +24,7 @@ class Expense {
 
     public void setDescription(String description) { this.description = description; }
     public void setAmount(double amount) { this.amount = amount; }
+    public void setDate(LocalDate date) { this.date = date; }
 
     @Override
     public String toString() {
@@ -34,6 +36,7 @@ class Expense {
 public class ExpenseTracker {
     private static final List<Expense> expenses = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static void main(String[] args) {
         boolean running = true;
@@ -80,7 +83,9 @@ public class ExpenseTracker {
         String description = scanner.nextLine();
 
         double amount = readValidAmount("Enter amount: ");
-        Expense expense = new Expense(description, amount);
+        LocalDate date = readValidDate("Enter date (yyyy-MM-dd): ");
+
+        Expense expense = new Expense(description, amount, date);
         expenses.add(expense);
 
         System.out.println("Expense added with ID: " + expense.getId());
@@ -99,8 +104,11 @@ public class ExpenseTracker {
         String newDescription = scanner.nextLine();
 
         double newAmount = readValidAmount("Enter new amount: ");
+        LocalDate newDate = readValidDate("Enter new date (yyyy-MM-dd): ");
+
         expense.setDescription(newDescription);
         expense.setAmount(newAmount);
+        expense.setDate(newDate);
 
         System.out.println("Expense updated.");
     }
@@ -174,6 +182,19 @@ public class ExpenseTracker {
             }
         }
         return amount;
+    }
+
+    private static LocalDate readValidDate(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine();
+
+            try {
+                return LocalDate.parse(input, dateFormatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter in yyyy-MM-dd format.");
+            }
+        }
     }
 
     private static String readId(String prompt) {
