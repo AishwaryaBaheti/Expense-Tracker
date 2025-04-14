@@ -114,7 +114,16 @@ public class ExpenseTracker {
             return;
         }
 
-        int year = LocalDate.now().getYear();
+        System.out.print("Enter year: ");
+        int year;
+        try {
+           year = Integer.parseInt(scanner.nextLine());
+            if (year < 1990 || year > 2100) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid year.");
+            return;
+        }
+
         double total = manager.getMonthlyExpense(month, year);
 
         String monthName = LocalDate.of(year, month, 1).getMonth().name();

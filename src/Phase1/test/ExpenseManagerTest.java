@@ -29,6 +29,15 @@ public class ExpenseManagerTest {
         boolean updated = manager.updateExpense(e.getId(), "Dinner", 15, LocalDate.now());
         assertTrue(updated);
         assertEquals("Dinner", manager.findExpenseById(e.getId()).getDescription());
+        assertEquals(15.0, manager.findExpenseById(e.getId()).getAmount());
+    }
+
+    @Test
+    void testUpdateExpense_noUpdation() {
+        Expense e = manager.addExpense("Lunch", 10, LocalDate.now());
+        boolean updated = manager.updateExpense("random-id", "Dinner", 15, LocalDate.now());
+        assertFalse(updated);
+        assertEquals("Lunch", manager.findExpenseById(e.getId()).getDescription());
     }
 
     @Test
@@ -53,5 +62,15 @@ public class ExpenseManagerTest {
 
         double aprilTotal = manager.getMonthlyExpense(4, 2025);
         assertEquals(1200, aprilTotal, 0.01);
+    }
+
+    @Test
+    void testMonthlySummary_checkYear() {
+        manager.addExpense("Rent", 1000, LocalDate.of(2025, 4, 1));
+        manager.addExpense("Food", 200, LocalDate.of(2025, 4, 15));
+        manager.addExpense("Gym", 50, LocalDate.of(2025, 3, 20));
+
+        double aprilTotal = manager.getMonthlyExpense(4, 2026);
+        assertEquals(0, aprilTotal, 0.01);
     }
 }
