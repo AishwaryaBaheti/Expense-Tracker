@@ -5,6 +5,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+/**
+ * Main class for the Expense Tracker application.
+ * Handles user interaction through the console.
+ */
+
 public class ExpenseTracker {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -15,10 +20,12 @@ public class ExpenseTracker {
 
         System.out.println("=== Expense Tracker ===");
 
+        // Main loop for the menu-driven interface
         while (running) {
-            printMenu();
-            String choice = scanner.nextLine();
+            printMenu();// Display the menu
+            String choice = scanner.nextLine();// Read user choice
 
+            // Perform action based on user input
             switch (choice) {
                 case "1" -> addExpense();
                 case "2" -> updateExpense();
@@ -27,16 +34,17 @@ public class ExpenseTracker {
                 case "5" -> viewSummaryAll();
                 case "6" -> viewSummaryByMonth();
                 case "7" -> {
-                    running = false;
+                    running = false;// Exit loop
                     System.out.println("Exiting... Goodbye!");
                 }
                 default -> System.out.println("Invalid option. Please try again.");
             }
         }
 
-        scanner.close();
+        scanner.close();// Close the scanner to free resources
     }
 
+    // Displays menu options
     private static void printMenu() {
         System.out.println("""
                 
@@ -50,6 +58,7 @@ public class ExpenseTracker {
                 Choose an option:\s""");
     }
 
+    // Adds a new expense
     private static void addExpense() {
         System.out.print("Enter description: ");
         String description = scanner.nextLine();
@@ -61,10 +70,12 @@ public class ExpenseTracker {
         System.out.println("Expense added with ID: " + expense.getId());
     }
 
+    // Updates an existing expense
     private static void updateExpense() {
         System.out.print("Enter expense ID to update: ");
         String id = scanner.nextLine().trim();
 
+        // Check if the expense exists
         if (manager.findExpenseById(id) == null) {
             System.out.println("Expense not found.");
             return;
@@ -80,6 +91,7 @@ public class ExpenseTracker {
         System.out.println(updated ? "Expense updated." : "Failed to update expense.");
     }
 
+    // Deletes an expense
     private static void deleteExpense() {
         System.out.print("Enter expense ID to delete: ");
         String id = scanner.nextLine().trim();
@@ -88,6 +100,7 @@ public class ExpenseTracker {
         System.out.println(deleted ? "Expense deleted." : "Expense not found.");
     }
 
+    // Displays all expenses
     private static void viewExpenses() {
         var expenses = manager.getAllExpenses();
         if (expenses.isEmpty()) {
@@ -98,11 +111,13 @@ public class ExpenseTracker {
         }
     }
 
+    // Displays total expenses
     private static void viewSummaryAll() {
         double total = manager.getTotalExpense();
         System.out.printf("Total expenses: $%.2f%n", total);
     }
 
+    // Displays summary for a specific month and year
     private static void viewSummaryByMonth() {
         System.out.print("Enter month (1-12): ");
         int month;
@@ -130,6 +145,7 @@ public class ExpenseTracker {
         System.out.printf("Total expenses for %s %d: $%.2f%n", monthName, year, total);
     }
 
+    // Helper method to read and validate a positive amount
     private static double readValidAmount(String prompt) {
         double amount;
         while (true) {
@@ -145,6 +161,7 @@ public class ExpenseTracker {
         }
     }
 
+    // Helper method to read and validate a date
     private static LocalDate readValidDate(String prompt) {
         while (true) {
             System.out.print(prompt);

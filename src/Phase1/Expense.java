@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Expense {
-    private final String id;
+    private String id;
     private String description;
     private double amount;
     private LocalDate date;
+
+    public Expense() {
+        // Default constructor for Jackson
+    }
 
     public Expense(String description, double amount, LocalDate date) {
         this.id = UUID.randomUUID().toString();
@@ -21,6 +25,7 @@ public class Expense {
     public double getAmount() { return amount; }
     public LocalDate getDate() { return date; }
 
+    public void setId(String id) { this.id = id; }
     public void setDescription(String description) { this.description = description; }
     public void setAmount(double amount) { this.amount = amount; }
     public void setDate(LocalDate date) { this.date = date; }
@@ -31,4 +36,3 @@ public class Expense {
                 id, description, amount, date);
     }
 }
-
