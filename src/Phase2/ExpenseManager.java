@@ -4,32 +4,33 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import Phase1.Expense;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * ExpenseManager handles CRUD operations on expenses
+ * and persists them in a JSON file only when changes occur.
+ */
 public class ExpenseManager {
+    private final File dataFile = new File("src/Phase2/expenses.json");
     private final List<Expense> expenses = new ArrayList<>();
-    private final File dataFile = new File("expenses.json");
     private final ObjectMapper mapper;
+    private boolean isDirty = false;
 
     public ExpenseManager() {
-        // Configure ObjectMapper
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // Load data on initialization
-        loadExpenses();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        loadExpenses(); // Load expenses on startup
     }
 
     public Expense addExpense(String description, double amount, LocalDate date) {
         Expense expense = new Expense(description, amount, date);
         expenses.add(expense);
-        saveExpenses();
+        isDirty = true;
         return expense;
     }
 
@@ -40,7 +41,7 @@ public class ExpenseManager {
         expense.setDescription(newDescription);
         expense.setAmount(newAmount);
         expense.setDate(newDate);
-        saveExpenses();
+        isDirty = true;
         return true;
     }
 
@@ -48,7 +49,7 @@ public class ExpenseManager {
         Expense expense = findExpenseById(id);
         if (expense != null) {
             expenses.remove(expense);
-            saveExpenses();
+            isDirty = true;
             return true;
         }
         return false;
@@ -77,20 +78,21 @@ public class ExpenseManager {
     }
 
     private void loadExpenses() {
-        if (!dataFile.exists()) return;
-
-        try {
-            List<Expense> loadedExpenses = mapper.readValue(dataFile, new TypeReference<>() {});
-            expenses.clear();
-            expenses.addAll(loadedExpenses);
-        } catch (IOException e) {
-            System.err.println("Failed to load expenses: " + e.getMessage());
+        if (dataFile.exists()) {
+            try {
+                List<Expense> loaded = mapper.readValue(dataFile, new TypeReference<List<Expense>>() {});
+                expenses.addAll(loaded);
+            } catch (IOException e) {
+                System.err.println("Failed to load expenses: " + e.getMessage());
+            }
         }
     }
 
-    private void saveExpenses() {
+    public void saveExpenses() {
+        if (!isDirty) return; // No changes, no save needed
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(dataFile, expenses);
+            mapper.writeValue(dataFile, expenses);
+            isDirty = false;
         } catch (IOException e) {
             System.err.println("Failed to save expenses: " + e.getMessage());
         }
