@@ -78,5 +78,15 @@
     <orderEntry type="library" name="jackson-annotations-2.19.0-rc2" level="project" />
     <orderEntry type="library" name="jackson-datatype-jsr310-2.17.0-javadoc" level="project" />
     <orderEntry type="library" name="jackson-datatype-jsr310-2.17.0" level="project" />
+    <orderEntry type="library" exported="" name="PostgreSQL" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../postgresql-42.7.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
