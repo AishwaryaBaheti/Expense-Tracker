@@ -10,8 +10,6 @@ public class main {
         Scanner scanner = new Scanner(System.in);
         ExpenseManagerDB manager = new ExpenseManagerDB();
 
-
-
         while (true) {
             System.out.println("\n--- Expense Tracker ---");
             System.out.println("1. Add Expense");
