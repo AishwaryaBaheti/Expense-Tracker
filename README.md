@@ -31,5 +31,4 @@ Java 17+
 PostgreSQL 14+
 JDBC
 Jackson (Phase 2)
-IntelliJ IDEA
-Maven (optional)
+
